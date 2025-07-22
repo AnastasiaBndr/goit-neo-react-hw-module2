@@ -1,23 +1,55 @@
+import {useEffect, useState } from "react";
 import "./App.css";
-import Profile from "./Profile";
-import FriendList from "./FriendList";
-import TransactionHistory from "./TransactionHistory";
-import { username, tag, location, avatar, stats } from "../data/userData.json";
-import friends from "../data/friends.json";
-import transactions from "../data/transactions.json";
+import Description from "./Description";
+import Feedback from "./Feedback";
+import Options from "./Options";
+import Notification from "./Notification";
 
 function App() {
+  const [feedback, setFeedback] = useState(() => {
+    const fb = window.localStorage.getItem("feedback");
+    if (fb !== null) return JSON.parse(fb);
+
+    return { good: 0, neutral: 0, bad: 0 };
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem("feedback", JSON.stringify(feedback));
+  },[feedback])
+
+  const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
+
+
+  function updateFeedback(feedbackType) {
+    setFeedback({
+      ...feedback,
+      [feedbackType]: feedback[feedbackType] + 1,
+    });
+    
+  }
+
+  function resetFeedback() {
+    setFeedback({
+      good: 0,
+      neutral: 0,
+      bad: 0,
+    });
+    localStorage.removeItem("feedback");
+  }
+
   return (
     <>
-      <Profile
-        name={username}
-        tag={tag}
-        location={location}
-        image={avatar}
-        stats={stats}
+      <Description />
+      <Options
+        options={updateFeedback}
+        totalFeedback={totalFeedback}
+        resetFeedback={resetFeedback}
       />
-      <FriendList friends={friends} />
-      <TransactionHistory items={transactions} />
+      {totalFeedback ? (
+        <Feedback feedback={feedback} totalFeedback={totalFeedback} />
+      ) : (
+        <Notification />
+      )}
     </>
   );
 }
