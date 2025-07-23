@@ -1,7 +1,7 @@
 import { BsEmojiHeartEyes, BsEmojiNeutral, BsEmojiAngry } from "react-icons/bs";
 import css from "./Feedback.module.css";
 
-function Feedback({ feedback: { good, neutral, bad }, totalFeedback }) {
+function Feedback({ feedback: { good, neutral, bad }, totalFeedback, positiveFeedback }) {
   return (
     <>
       <div className={css["emoji-container"]}>
@@ -17,7 +17,7 @@ function Feedback({ feedback: { good, neutral, bad }, totalFeedback }) {
       </div>
 
       <p>Total: {totalFeedback}</p>
-      <p>Positive: {Math.round((good / totalFeedback) * 100)}%</p>
+      <p>Positive: {positiveFeedback}%</p>
     </>
   );
 }
